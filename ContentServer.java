@@ -17,7 +17,6 @@ public class ContentServer {
             String hostname = hostname_port[0];
             int port = Integer.parseInt(hostname_port[1]);
             String file_path = args[1];
-            // System.out.println("Connecting to server " + hostname + " on port " + port + " with file path " + file_path);
             
             // Read the file
             ContentServer server = new ContentServer();
@@ -30,8 +29,9 @@ public class ContentServer {
             // Construct put request
             String request = server.constructPUTRequest(json);
 
-            // Print request to console
-            System.out.println(request);
+            // Send the PUT request
+            server.sendPUTRequest(hostname, port, request);
+
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
@@ -97,5 +97,23 @@ public class ContentServer {
         }
         jsonBuilder.append("}");
         return jsonBuilder.toString();
+    }
+
+    private void sendPUTRequest(String hostname, int port, String request) {
+        try (Socket socket = new Socket(hostname, port);
+            OutputStream outputStream = socket.getOutputStream()) {
+
+            // Send the PUT request
+            outputStream.write(request.getBytes());
+
+            // Flush the output stream and close the socket
+            outputStream.flush();
+            socket.close();
+            
+            System.out.println("PUT Request Sent Successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Error sending PUT request: " + e.getMessage());
+        }
     }
 }
