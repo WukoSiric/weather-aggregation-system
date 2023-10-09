@@ -17,7 +17,7 @@ public class ContentServer {
             String hostname = hostname_port[0];
             int port = Integer.parseInt(hostname_port[1]);
             String file_path = args[1];
-            System.out.println("Connecting to server " + hostname + " on port " + port + " with file path " + file_path);
+            // System.out.println("Connecting to server " + hostname + " on port " + port + " with file path " + file_path);
             
             // Read the file
             ContentServer server = new ContentServer();
@@ -58,25 +58,44 @@ public class ContentServer {
         return null;
     }
 
-    public String constructPUTRequest(JSONObject json) {
+    private String constructPUTRequest(JSONObject json) {
         // Construct the PUT request with JSON data
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append("PUT /weather.json HTTP/1.1\r\n");
         requestBuilder.append("User-Agent: ATOMClient/1/0\r\n");
         requestBuilder.append("Content-Type: application/json\r\n");
-        requestBuilder.append("Content-Length: " + json.toString().length() + "\r\n");
+    
+        // Convert the JSON object to a properly formatted string
+        String jsonStr = formatJsonObject(json);
+    
+        requestBuilder.append("Content-Length: " + jsonStr.length() + "\r\n");
         requestBuilder.append("\r\n"); // Blank line separating headers from the body
-        requestBuilder.append("{\r\n");
-        // Append each key-value pair to the request
+        requestBuilder.append(jsonStr);
+        return requestBuilder.toString();
+    }
+    
+    private String formatJsonObject(JSONObject json) {
+        // Format the JSON object as a string
+        StringBuilder jsonBuilder = new StringBuilder();
+        jsonBuilder.append("{\r\n");
         Iterator<String> keys = json.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            requestBuilder.append("    \"" + key + "\": \"" + json.get(key) + "\"");
+            jsonBuilder.append("    \"" + key + "\": ");
+            Object value = json.get(key);
+            if (value instanceof String) {
+                // If the value is a string, enclose it in double quotes
+                jsonBuilder.append("\"" + value + "\"");
+            } else {
+                jsonBuilder.append(value.toString());
+            }
             if (keys.hasNext()) {
-                requestBuilder.append(",\r\n");
+                jsonBuilder.append(",\r\n");
+            } else {
+                jsonBuilder.append("\r\n");
             }
         }
-        requestBuilder.append("\r\n}");
-        return requestBuilder.toString();
+        jsonBuilder.append("}");
+        return jsonBuilder.toString();
     }
 }
