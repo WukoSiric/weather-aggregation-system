@@ -1,7 +1,7 @@
 JCC = javac
 JFLAGS = -g
 JC = java
-CP = -cp .:json.jar
+CP = -cp .:./Libraries
 PORT = 4567
 
 default: ContentServer.class AggregationServer.class
@@ -17,3 +17,6 @@ run-content: ContentServer.class
 
 run-aggregation: AggregationServer.class
 	$(JC) $(CP) AggregationServer $(PORT)
+
+clean: 
+	$(RM) *.class
