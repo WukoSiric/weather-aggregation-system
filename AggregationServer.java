@@ -68,7 +68,20 @@ public class AggregationServer {
                     // Now you can process the request body in 'requestBody' variable
                     System.out.println("Received valid PUT request:\n" + request);
                     System.out.println("Request Body:\n" + requestBody.toString());
+                    
+                    // Create / Update weather.json file 
+                    File file = new File("weather.json");
+                    if (file.createNewFile()) {
+                        System.out.println("File created: " + file.getName());
+                    } else {
+                        System.out.println("File already exists.");
+                    }
 
+                    // Write to weather.json file
+                    FileWriter fileWriter = new FileWriter("weather.json");
+                    fileWriter.write(requestBody.toString());
+                    fileWriter.close();
+                    
                     // Respond with a 200 OK
                     writer.write("HTTP/1.1 200 OK\r\n");
                     writer.write("\r\n");
