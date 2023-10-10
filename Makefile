@@ -26,3 +26,4 @@ run-client: GETClient.class
 
 clean: 
 	$(RM) *.class
+	$(RM) weather.json
