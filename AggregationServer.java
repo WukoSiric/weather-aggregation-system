@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import org.json.*;
 
 public class AggregationServer {
     public static void main(String[] args) {
@@ -68,6 +69,13 @@ public class AggregationServer {
                     // Now you can process the request body in 'requestBody' variable
                     System.out.println("Received valid PUT request:\n" + request);
                     System.out.println("Request Body:\n" + requestBody.toString());
+
+                    JSONObject json = new JSONObject(requestBody.toString());
+                    Object stationID = json.get("id"); 
+
+                    // Format JSON so ID is key and rest of data is value
+                    JSONObject jsonFormatted = new JSONObject();
+                    jsonFormatted.put(stationID.toString(), json);
                     
                     // Create / Update weather.json file 
                     File file = new File("weather.json");
@@ -75,11 +83,11 @@ public class AggregationServer {
                         System.out.println("File created: " + file.getName());
                     } else {
                         System.out.println("File already exists.");
-                    }
+                    } 
 
                     // Write to weather.json file
                     FileWriter fileWriter = new FileWriter("weather.json");
-                    fileWriter.write(requestBody.toString());
+                    fileWriter.write(jsonFormatted.toString());
                     fileWriter.close();
                     
                     // Respond with a 200 OK
