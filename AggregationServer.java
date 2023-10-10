@@ -71,10 +71,14 @@ public class AggregationServer {
 
                     // Respond with a 200 OK
                     writer.write("HTTP/1.1 200 OK\r\n");
-                    writer.write("Content-Length: 0\r\n");
                     writer.write("\r\n");
                     writer.flush();
-                } else {
+                } else if (isValidGetRequest(request.toString())) {
+                    writer.write("HTTP/1.1 200 OK\r\n");
+                    writer.write("\r\n");
+                    writer.flush();
+                }
+                else {
                     // Respond with a 400 Bad Request
                     writer.write("HTTP/1.1 400 Bad Request\r\n");
                     writer.write("Content-Length: 0\r\n");
@@ -98,6 +102,11 @@ public class AggregationServer {
                     request.startsWith("PUT") &&
                     request.contains("Content-Type: application/json") &&
                     request.contains("Content-Length: ");
+        }
+
+        private static boolean isValidGetRequest(String request) {
+            // Check if the request is a valid GET request with required headers
+            return request.startsWith("GET");
         }
 
         private static int extractContentLength(String request) {
