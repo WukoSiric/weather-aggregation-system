@@ -99,7 +99,6 @@ public class ContentServer {
             jsonBuilder.append("    \"" + key + "\": ");
             Object value = json.get(key);
             if (value instanceof String) {
-                // If the value is a string, enclose it in double quotes
                 jsonBuilder.append("\"" + value + "\"");
             } else {
                 jsonBuilder.append(value.toString());

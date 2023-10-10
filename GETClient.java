@@ -29,7 +29,7 @@ public class GETClient {
 
             // Send the GET request to the server using write
             writer.write(request);
-            writer.flush(); // Important to flush the buffer to send the request
+            writer.flush(); 
 
             // Read and print the response from the server
             String line;
