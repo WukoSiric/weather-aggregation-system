@@ -81,7 +81,6 @@ public class AggregationServer {
                 else {
                     // Respond with a 400 Bad Request
                     writer.write("HTTP/1.1 400 Bad Request\r\n");
-                    writer.write("Content-Length: 0\r\n");
                     writer.write("\r\n");
                     writer.flush();
                 }
