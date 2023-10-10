@@ -29,9 +29,24 @@ public class ContentServer {
             // Construct put request
             String request = server.constructPUTRequest(json);
 
-            // Send the PUT request
-            server.sendPUTRequest(hostname, port, request);
+            //  Establish connection with server
+            Socket socket = new Socket(hostname, port);
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            // Send request to server
+            writer.write(request);
+            writer.flush();
+
+            // Read response from server
+            String line = reader.readLine();
+            while (line != null) {
+                System.out.println(line);
+                line = reader.readLine();
+            }
+
+            // Close the connection
+            socket.close();
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
@@ -97,23 +112,5 @@ public class ContentServer {
         }
         jsonBuilder.append("}");
         return jsonBuilder.toString();
-    }
-
-    private void sendPUTRequest(String hostname, int port, String request) {
-        try (Socket socket = new Socket(hostname, port);
-            OutputStream outputStream = socket.getOutputStream()) {
-
-            // Send the PUT request
-            outputStream.write(request.getBytes());
-
-            // Flush the output stream and close the socket
-            outputStream.flush();
-            socket.close();
-            
-            System.out.println("PUT Request Sent Successfully!");
-
-        } catch (IOException e) {
-            System.out.println("Error sending PUT request: " + e.getMessage());
-        }
     }
 }
