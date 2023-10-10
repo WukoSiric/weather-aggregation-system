@@ -1,0 +1,19 @@
+{
+    "id" : "BNE405",
+    "name" : "Brisbane (South Bank)",
+    "state" : "QLD",
+    "time_zone" : "AEST",
+    "lat": -27.4796,
+    "lon": 153.0286,
+    "local_date_time": "15/04:10pm",
+    "local_date_time_full": "20230715161000",
+    "air_temp": 25.5,
+    "apparent_t": 27.3,
+    "cloud": "Mostly sunny",
+    "dewpt": 18.9,
+    "press": 1014.2,
+    "rel_hum": 69,
+    "wind_dir": "NNE",
+    "wind_spd_kmh": 14,
+    "wind_spd_kt": 7
+}

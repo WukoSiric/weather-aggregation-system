@@ -1,0 +1,19 @@
+{
+    "id" : "SYD001",
+    "name" : "Sydney (Central Business District)",
+    "state" : "NSW",
+    "time_zone" : "AEDT",
+    "lat": -33.8668,
+    "lon": 151.2093,
+    "local_date_time": "15/04:30pm",
+    "local_date_time_full": "20230715163000",
+    "air_temp": 22.8,
+    "apparent_t": 24.5,
+    "cloud": "Clear",
+    "dewpt": 15.2,
+    "press": 1011.4,
+    "rel_hum": 58,
+    "wind_dir": "ESE",
+    "wind_spd_kmh": 12,
+    "wind_spd_kt": 6
+}
