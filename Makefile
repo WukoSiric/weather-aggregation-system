@@ -15,8 +15,14 @@ AggregationServer.class: AggregationServer.java
 GETClient.class: GETClient.java
 	$(JCC) $(JFLAGS) $(CP) GETClient.java
 
-run-content: ContentServer.class
-	$(JC) $(CP) ContentServer localhost:$(PORT) weather1.txt
+run-content1: ContentServer.class
+	$(JC) $(CP) ContentServer localhost:$(PORT) ./Stations/weather1.txt
+
+run-content2: ContentServer.class
+	$(JC) $(CP) ContentServer localhost:$(PORT) ./Stations/weather2.txt
+
+run-content3: ContentServer.class
+	$(JC) $(CP) ContentServer localhost:$(PORT) ./Stations/weather3.txt
 
 run-server: AggregationServer.class
 	$(JC) $(CP) AggregationServer
