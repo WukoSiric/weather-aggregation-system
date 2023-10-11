@@ -28,7 +28,16 @@ run-server: AggregationServer.class
 	$(JC) $(CP) AggregationServer
 
 run-client: GETClient.class
-	$(JC) $(CP) GETClient localhost:$(PORT) randomID
+	$(JC) $(CP) GETClient localhost:$(PORT)
+
+run-client1: GETClient.class
+	$(JC) $(CP) GETClient localhost:$(PORT) IDS60901
+
+run-client2: GETClient.class
+	$(JC) $(CP) GETClient localhost:$(PORT) BNE405
+
+run-client3: GETClient.class
+	$(JC) $(CP) GETClient localhost:$(PORT) SYD001
 
 clean: 
 	$(RM) *.class
