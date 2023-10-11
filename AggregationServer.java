@@ -95,18 +95,20 @@ public class AggregationServer {
                     writer.write("\r\n");
                     writer.flush();
                 } else if (isValidGetRequest(request.toString())) {
+
+                    // Print get request
+                    System.out.println("Received valid GET request:\n" + request);
                     writer.write("HTTP/1.1 200 OK\r\n");
-                    // Send basic web page
-                    writer.write("Content-Type: text/html\r\n");
+                    writer.write("Content-Type: application/json\r\n");
                     writer.write("\r\n");
-                    writer.write("<!DOCTYPE HTML>");
-                    writer.write("<html>");
-                    writer.write("<head><title>Weather</title></head>");
-                    writer.write("<body>");
-                    writer.write("<h1>Weather</h1>");
-                    writer.write("<p>Weather data is available at <a href=\"http://localhost:4567/weather.json\">http://localhost:4567/weather.json</a></p>");
-                    writer.write("</body>");
-                    writer.write("</html>");
+                    // Put contents of weather.json in response 
+                    BufferedReader br = new BufferedReader(new FileReader("weather.json"));
+                    String line2 = br.readLine();
+                    while (line2 != null) {
+                        writer.write(line2);
+                        line2 = br.readLine();
+                    }
+                    br.close();
                     writer.flush();
                 }
                 else {
