@@ -96,7 +96,17 @@ public class AggregationServer {
                     writer.flush();
                 } else if (isValidGetRequest(request.toString())) {
                     writer.write("HTTP/1.1 200 OK\r\n");
+                    // Send basic web page
+                    writer.write("Content-Type: text/html\r\n");
                     writer.write("\r\n");
+                    writer.write("<!DOCTYPE HTML>");
+                    writer.write("<html>");
+                    writer.write("<head><title>Weather</title></head>");
+                    writer.write("<body>");
+                    writer.write("<h1>Weather</h1>");
+                    writer.write("<p>Weather data is available at <a href=\"http://localhost:4567/weather.json\">http://localhost:4567/weather.json</a></p>");
+                    writer.write("</body>");
+                    writer.write("</html>");
                     writer.flush();
                 }
                 else {
