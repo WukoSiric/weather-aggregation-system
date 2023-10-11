@@ -39,20 +39,36 @@ public class GETClient {
                 response.append(line).append("\n");
             }
 
+            // Close the connection
+            socket.close();
+
             // Split response body by empty line 
             String[] responseParts = response.toString().split("\n\n");
             JSONObject receivedData = new JSONObject(responseParts[1]); 
 
             // Print the response body without JSON formatting
-            for (String key : receivedData.keySet()) {
-                System.out.println("Station " + key);
-                for (String key2 : receivedData.getJSONObject(key).keySet()) {
-                    System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
+            if (stationID == null) {
+                for (String key : receivedData.keySet()) {
+                    System.out.println("Station " + key);
+                    for (String key2 : receivedData.getJSONObject(key).keySet()) {
+                        System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
+                    }
                 }
+
+                return;
             }
 
-            // Close the connection
-            socket.close();
+            // Print specific station data
+            System.out.println("Station " + stationID);
+            if (receivedData.keySet().contains(stationID)) {
+                for (String key : receivedData.getJSONObject(stationID).keySet()) {
+                    System.out.println("    " + key + ": " + receivedData.getJSONObject(stationID).get(key));
+                }
+            } 
+            else {
+                System.out.println("    Station not found");
+            }
+
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
