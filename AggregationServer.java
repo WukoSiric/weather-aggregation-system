@@ -110,19 +110,22 @@ public class AggregationServer {
             
             // Create / Update weather.json file 
             File file = new File("weather.json");
-            if (file.createNewFile()) {
+            Boolean fileCreated = file.createNewFile();
+            if (fileCreated) {
                 System.out.println("File created: " + file.getName());
+                FileWriter fileWriter = new FileWriter("weather.json");
+                fileWriter.write(jsonFormatted.toString());
+                fileWriter.close();
+                writer.write("HTTP/1.1 201 Created\r\n");
             } else {
                 System.out.println("File already exists.");
-            } 
-
-            // Write to weather.json file
-            FileWriter fileWriter = new FileWriter("weather.json");
-            fileWriter.write(jsonFormatted.toString());
-            fileWriter.close();
-            
-            // Respond with a 200 OK
-            writer.write("HTTP/1.1 200 OK\r\n");
+                JSONObject weatherData = readFile("weather.json");
+                weatherData.put(stationID.toString(), json);
+                FileWriter fileWriter = new FileWriter("weather.json");
+                fileWriter.write(weatherData.toString());
+                fileWriter.close();
+                writer.write("HTTP/1.1 200 OK\r\n");
+            }
             writer.write("\r\n");
             writer.flush();
         }
@@ -163,5 +166,26 @@ public class AggregationServer {
             }
             return -1; // Return -1 if header is not found or parsing fails
         }
+    }
+
+    public static JSONObject readFile(String file_path) {
+        // Read the file and return a JSONObject
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(file_path));
+            String line = reader.readLine();
+            String json_string = "";
+            while (line != null) {
+                json_string += line;
+                line = reader.readLine();
+            }
+            reader.close();
+            return new JSONObject(json_string);
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+
+        // Return null if there is an error
+        return null;
     }
 }
