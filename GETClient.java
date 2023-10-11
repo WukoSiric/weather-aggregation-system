@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import org.json.*; 
 
 public class GETClient {
     public static void main(String[] args) {
@@ -32,9 +33,22 @@ public class GETClient {
             writer.flush(); 
 
             // Read and print the response from the server
-            String line;
+            StringBuilder response = new StringBuilder();
+            String line; 
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                response.append(line).append("\n");
+            }
+
+            // Split response body by empty line 
+            String[] responseParts = response.toString().split("\n\n");
+            JSONObject receivedData = new JSONObject(responseParts[1]); 
+
+            // Print the response body without JSON formatting
+            for (String key : receivedData.keySet()) {
+                System.out.println("Station " + key);
+                for (String key2 : receivedData.getJSONObject(key).keySet()) {
+                    System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
+                }
             }
 
             // Close the connection
