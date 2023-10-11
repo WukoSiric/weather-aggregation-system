@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class AggregationServer {
     private static final int defaultPort = 4567;
     private static final Map<String, Long> stationTimestamps = new HashMap<>();
-    private static final long EXPIRATION_TIME = 30 * 1000; // 30 seconds in milliseconds
+    private static final long EXPIRATION_TIME = 10 * 1000; // 30 seconds in milliseconds
     public static void main(String[] args) {
         int port;
 
@@ -48,10 +48,17 @@ public class AggregationServer {
             public void run() {
                 // Remove expired stations
                 long currentTime = System.currentTimeMillis();
-                stationTimestamps.entrySet().removeIf(entry -> (currentTime - entry.getValue()) > EXPIRATION_TIME);
+                stationTimestamps.entrySet().removeIf(entry -> {
+                    boolean expired = (currentTime - entry.getValue()) > EXPIRATION_TIME;
+                    if (expired) {
+                        System.out.println("Station expired: " + entry.getKey());
+                    }
+                    return expired;
+                });
             }
         }, 0, 3000);
     }
+    
 
     private static class ClientHandler extends Thread {
         private final Socket clientSocket;
@@ -124,6 +131,9 @@ public class AggregationServer {
 
             JSONObject json = new JSONObject(requestBody.toString());
             Object stationID = json.get("id"); 
+
+            // Add station to stationTimestamps
+            stationTimestamps.put(stationID.toString(), System.currentTimeMillis());
 
             // Format JSON so ID is key and rest of data is value
             JSONObject jsonFormatted = new JSONObject();
