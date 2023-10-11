@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class AggregationServer {
     private static final int defaultPort = 4567;
     private static final Map<String, Long> stationTimestamps = new HashMap<>();
-    private static final long EXPIRATION_TIME = 10 * 1000; // 30 seconds in milliseconds
+    private static final long EXPIRATION_TIME = 30 * 1000;
     public static void main(String[] args) {
         int port;
 
@@ -52,13 +52,26 @@ public class AggregationServer {
                     boolean expired = (currentTime - entry.getValue()) > EXPIRATION_TIME;
                     if (expired) {
                         System.out.println("Station expired: " + entry.getKey());
+                        removeStationFromWeatherJson(entry.getKey());
                     }
                     return expired;
                 });
             }
         }, 0, 3000);
     }
-    
+
+    private static void removeStationFromWeatherJson(String stationID) {
+        JSONObject weatherData = readFile("weather.json");
+        if (weatherData != null && weatherData.has(stationID)) {
+            weatherData.remove(stationID);
+            try (FileWriter fileWriter = new FileWriter("weather.json")) {
+                fileWriter.write(weatherData.toString());
+                System.out.println("Removed station " + stationID + " from weather.json");
+            } catch (IOException e) {
+                System.err.println("Error removing station from weather.json: " + e.getMessage());
+            }
+        }
+    }
 
     private static class ClientHandler extends Thread {
         private final Socket clientSocket;
