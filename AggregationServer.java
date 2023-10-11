@@ -52,64 +52,12 @@ public class AggregationServer {
                     request.append(line).append("\n");
                 }
 
-                // Check if the request is a valid PUT request with required headers
-                if (isValidPutRequest(request.toString())) {
-                    // Extract content length
-                    int contentLength = extractContentLength(request.toString());
+                String requestString = request.toString();
 
-                    // Read the request body based on content length
-                    StringBuilder requestBody = new StringBuilder();
-                    char[] buffer = new char[1024];
-                    int bytesRead;
-                    while (contentLength > 0 && (bytesRead = reader.read(buffer, 0, Math.min(contentLength, buffer.length))) != -1) {
-                        requestBody.append(buffer, 0, bytesRead);
-                        contentLength -= bytesRead;
-                    }
-
-                    // Now you can process the request body in 'requestBody' variable
-                    System.out.println("Received valid PUT request:\n" + request);
-                    System.out.println("Request Body:\n" + requestBody.toString());
-
-                    JSONObject json = new JSONObject(requestBody.toString());
-                    Object stationID = json.get("id"); 
-
-                    // Format JSON so ID is key and rest of data is value
-                    JSONObject jsonFormatted = new JSONObject();
-                    jsonFormatted.put(stationID.toString(), json);
-                    
-                    // Create / Update weather.json file 
-                    File file = new File("weather.json");
-                    if (file.createNewFile()) {
-                        System.out.println("File created: " + file.getName());
-                    } else {
-                        System.out.println("File already exists.");
-                    } 
-
-                    // Write to weather.json file
-                    FileWriter fileWriter = new FileWriter("weather.json");
-                    fileWriter.write(jsonFormatted.toString());
-                    fileWriter.close();
-                    
-                    // Respond with a 200 OK
-                    writer.write("HTTP/1.1 200 OK\r\n");
-                    writer.write("\r\n");
-                    writer.flush();
-                } else if (isValidGetRequest(request.toString())) {
-
-                    // Print get request
-                    System.out.println("Received valid GET request:\n" + request);
-                    writer.write("HTTP/1.1 200 OK\r\n");
-                    writer.write("Content-Type: application/json\r\n");
-                    writer.write("\r\n");
-                    // Put contents of weather.json in response 
-                    BufferedReader br = new BufferedReader(new FileReader("weather.json"));
-                    String line2 = br.readLine();
-                    while (line2 != null) {
-                        writer.write(line2);
-                        line2 = br.readLine();
-                    }
-                    br.close();
-                    writer.flush();
+                if (isValidPutRequest(requestString)) {
+                    handlePutRequest(requestString, reader, writer);
+                } else if (isValidGetRequest(requestString)) {
+                    handleGetRequest(requestString, reader, writer);
                 }
                 else {
                     // Respond with a 400 Bad Request
@@ -136,9 +84,69 @@ public class AggregationServer {
                     request.contains("Content-Length: ");
         }
 
+        private void handlePutRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
+            // Extract content length
+            int contentLength = extractContentLength(request.toString());
+
+            // Read the request body based on content length
+            StringBuilder requestBody = new StringBuilder();
+            char[] buffer = new char[1024];
+            int bytesRead;
+            while (contentLength > 0 && (bytesRead = reader.read(buffer, 0, Math.min(contentLength, buffer.length))) != -1) {
+                requestBody.append(buffer, 0, bytesRead);
+                contentLength -= bytesRead;
+            }
+
+            // Now you can process the request body in 'requestBody' variable
+            System.out.println("Received valid PUT request:\n" + request);
+            System.out.println("Request Body:\n" + requestBody.toString());
+
+            JSONObject json = new JSONObject(requestBody.toString());
+            Object stationID = json.get("id"); 
+
+            // Format JSON so ID is key and rest of data is value
+            JSONObject jsonFormatted = new JSONObject();
+            jsonFormatted.put(stationID.toString(), json);
+            
+            // Create / Update weather.json file 
+            File file = new File("weather.json");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            } 
+
+            // Write to weather.json file
+            FileWriter fileWriter = new FileWriter("weather.json");
+            fileWriter.write(jsonFormatted.toString());
+            fileWriter.close();
+            
+            // Respond with a 200 OK
+            writer.write("HTTP/1.1 200 OK\r\n");
+            writer.write("\r\n");
+            writer.flush();
+        }
+
         private static boolean isValidGetRequest(String request) {
             // Check if the request is a valid GET request with required headers
             return request.startsWith("GET");
+        }
+
+        private void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
+            // Print get request
+            System.out.println("Received valid GET request:\n" + request);
+            writer.write("HTTP/1.1 200 OK\r\n");
+            writer.write("Content-Type: application/json\r\n");
+            writer.write("\r\n");
+            // Put contents of weather.json in response 
+            BufferedReader br = new BufferedReader(new FileReader("weather.json"));
+            String line2 = br.readLine();
+            while (line2 != null) {
+                writer.write(line2);
+                line2 = br.readLine();
+            }
+            br.close();
+            writer.flush();
         }
 
         private static int extractContentLength(String request) {
