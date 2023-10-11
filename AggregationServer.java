@@ -153,7 +153,14 @@ public class AggregationServer {
 
         private static boolean isValidGetRequest(String request) {
             // Check if the request is a valid GET request with required headers
-            return request.startsWith("GET");
+            String[] requestLines = request.split("\n");
+            String firstLine = requestLines[0];
+            String[] firstLineParts = firstLine.split(" ");
+            return 
+                    firstLineParts.length == 3 &&
+                    firstLineParts[0].equals("GET") &&
+                    (firstLineParts[1].equals("/weather.json") || firstLineParts[1].equals("/")) &&
+                    firstLineParts[2].equals("HTTP/1.1");
         }
 
         private void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
@@ -162,14 +169,11 @@ public class AggregationServer {
             writer.write("HTTP/1.1 200 OK\r\n");
             writer.write("Content-Type: application/json\r\n");
             writer.write("\r\n");
-            // Put contents of weather.json in response 
-            BufferedReader br = new BufferedReader(new FileReader("weather.json"));
-            String line2 = br.readLine();
-            while (line2 != null) {
-                writer.write(line2);
-                line2 = br.readLine();
-            }
-            br.close();
+
+            // Read weather.json file
+            JSONObject weatherData = readFile("weather.json");
+            writer.write(weatherData.toString());
+            writer.write("\r\n");
             writer.flush();
         }
 
