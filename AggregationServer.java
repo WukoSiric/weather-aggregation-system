@@ -1,10 +1,16 @@
 import java.io.*;
 import java.net.*;
 import org.json.*;
+import java.util.HashMap; 
+import java.util.Map;
+import java.util.Timer; 
+import java.util.TimerTask;
 
 public class AggregationServer {
+    private static final int defaultPort = 4567;
+    private static final Map<String, Long> stationTimestamps = new HashMap<>();
+    private static final long EXPIRATION_TIME = 30 * 1000; // 30 seconds in milliseconds
     public static void main(String[] args) {
-        final int defaultPort = 4567; // Default port number if no argument is provided
         int port;
 
         if (args.length > 0) {
@@ -18,6 +24,9 @@ public class AggregationServer {
             port = defaultPort;
         }
 
+        // Start the station expiration timer
+        startStationExpirationTimer();
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("AggregationServer listening on port " + port);
             while (true) {
@@ -30,6 +39,18 @@ public class AggregationServer {
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
+    }
+
+    private static void startStationExpirationTimer() {
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                // Remove expired stations
+                long currentTime = System.currentTimeMillis();
+                stationTimestamps.entrySet().removeIf(entry -> (currentTime - entry.getValue()) > EXPIRATION_TIME);
+            }
+        }, 0, 3000);
     }
 
     private static class ClientHandler extends Thread {
