@@ -1,7 +1,7 @@
 JCC = javac
 JFLAGS = -g
 JC = java
-CP = -cp .:./Libraries/json.jar:./Libraries/junit.jar
+CP = -cp .:./Libraries/*
 PORT = 4567
 
 default: ContentServer.class AggregationServer.class GETClient.class
