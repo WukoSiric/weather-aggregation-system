@@ -30,10 +30,13 @@ public class ParseUtils {
         return hostname_port;
     }
 
-    static JSONObject JSONObjectFromFile(String file_path) {
+    // INPUTS: file_path - a string representing the path to the file
+    // OUTPUTS: a JSONObject representing the contents of the file
+    // DESCRIPTION: reads the contents of the file and returns a JSONObject
+    static JSONObject JSONObjectFromFile(String jsonFilePath) {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(file_path));
+            reader = new BufferedReader(new FileReader(jsonFilePath));
             String line = reader.readLine();
             String json_string = "";
             while (line != null) {
