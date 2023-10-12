@@ -54,16 +54,14 @@ public class ContentServerTest {
     // Test the readFile method with a valid file
     public static void testReadFileWithValidFile() {
         String validFilePath = "./Tests/valid.json"; // Provide a valid JSON file path here
-        ContentServer server = new ContentServer();
-        JSONObject json = server.readFile(validFilePath);
+        JSONObject json = ParseUtils.JSONObjectFromFile(validFilePath);
         assertNotNull(json, "testReadFileWithValidFile");
     }
 
     // Test the readFile method with an invalid file
     public static void testReadFileWithInvalidFile() {
         String invalidFilePath = "./Tests/invalid.json"; // Provide an invalid file path here
-        ContentServer server = new ContentServer();
-        JSONObject json = server.readFile(invalidFilePath);
+        JSONObject json = ParseUtils.JSONObjectFromFile(invalidFilePath);
         assertNull(json, "testReadFileWithInvalidFile");
     }
 
