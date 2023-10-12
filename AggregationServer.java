@@ -164,6 +164,14 @@ public class AggregationServer {
         }
 
         private void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
+            File file = new File("weather.json");
+            if (!file.exists()) {
+                writer.write("HTTP/1.1 404 Not Found\r\n");
+                writer.write("\r\n");
+                writer.flush();
+                return;
+            }
+            
             // Print get request
             System.out.println("Received valid GET request:\n" + request);
             writer.write("HTTP/1.1 200 OK\r\n");
