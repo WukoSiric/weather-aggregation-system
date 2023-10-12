@@ -47,28 +47,12 @@ public class GETClient {
             JSONObject receivedData = new JSONObject(responseParts[1]); 
 
             // Print the response body without JSON formatting
-            if (stationID == null) {
-                for (String key : receivedData.keySet()) {
-                    System.out.println("Station " + key);
-                    for (String key2 : receivedData.getJSONObject(key).keySet()) {
-                        System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
-                    }
+            for (String key : receivedData.keySet()) {
+                System.out.println("Station " + key);
+                for (String key2 : receivedData.getJSONObject(key).keySet()) {
+                    System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
                 }
-
-                return;
             }
-
-            // Print specific station data
-            System.out.println("Station " + stationID);
-            if (receivedData.keySet().contains(stationID)) {
-                for (String key : receivedData.getJSONObject(stationID).keySet()) {
-                    System.out.println("    " + key + ": " + receivedData.getJSONObject(stationID).get(key));
-                }
-            } 
-            else {
-                System.out.println("    Station not found");
-            }
-
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
