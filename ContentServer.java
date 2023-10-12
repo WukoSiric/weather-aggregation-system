@@ -4,7 +4,7 @@ import org.json.*;
 import java.util.*;
 
 public class ContentServer {
-    private ContentServer() {}
+    public ContentServer() {}
 
     public static void main(String[] args) {
         if (args.length != 2) {
@@ -80,7 +80,7 @@ public class ContentServer {
         }
     }
     
-    private static boolean checkIfSuccessful(String response) {
+    static boolean checkIfSuccessful(String response) {
         if (response.startsWith("HTTP/1.1 2")) {
             return true;
         }
@@ -106,7 +106,7 @@ public class ContentServer {
         return null;
     }
 
-    private String constructPUTRequest(JSONObject json) {
+    String constructPUTRequest(JSONObject json) {
         // Construct the PUT request with JSON data
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append("PUT /weather.json HTTP/1.1\r\n");
