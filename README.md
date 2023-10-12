@@ -91,9 +91,21 @@ The output of these tests are all in the Tests folder.
 ## Integration Testing
 **IMPORTANT: DO NOT SEND ANY REQUESTS TO THE SERVER WHILE INTEGRATION TESTING. THIS WILL CAUSE THE TESTS TO FAIL.**
 
-Integration testing is done with the script files provided in the root folder. The entire suite of integration tests can be ran with the following command:
+Integration testing is done with the script files provided in the root folder. The entire suite of integration tests can by doing the following.
+### 1. Ensure scripts are executable
+ You can guarantee this by running the following command in the root folder:
+ ```
+ chmod +x *.sh
+ ```
+### 2. Clean the project
+This will remove all .class files, weather.json, and all .txt files in Tests folder. 
 ```
-make integration
+make clean
+```
+
+### 3. Run the integration tests
+```
+make integration 
 ```
 This will run the following scripts:
 * ```IT-1.sh``` Put Content on Server and Retrieve with GET
@@ -102,3 +114,4 @@ This will run the following scripts:
 * ```IT-4.sh``` Tests data expunging works correctly for a single station
 * ```IT-Clean.sh``` Removes makefile inserted statements from log files 
 * ```IT-Compare.sh``` Evaluates integration tests by comparing log files with checksums of .comp files
+
