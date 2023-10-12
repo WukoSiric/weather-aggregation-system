@@ -24,7 +24,7 @@ public class GETClient {
             int retryCount = 0;
 
             boolean success = false;
-
+a
             while (retryCount < maxRetryAttempts) {
                 try {
                     // Establish connection with the server
@@ -82,6 +82,9 @@ public class GETClient {
         }
     }
 
+    // INPUT stationID: String
+    // OUTPUT request: String
+    // Construct the GET request with optional stationID
     static String constructGETRequest(String stationID) {
         // Construct the GET request with optional stationID
         StringBuilder requestBuilder = new StringBuilder();
