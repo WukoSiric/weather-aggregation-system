@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class AggregationServer {
     private static final int defaultPort = 4567;
     private static final Map<String, Long> stationTimestamps = new HashMap<>();
-    private static final long EXPIRATION_TIME = 30 * 1000;
+    private static final long EXPIRATION_TIME = 300 * 1000;
     public static void main(String[] args) {
         int port;
 
@@ -194,15 +194,39 @@ public class AggregationServer {
                 writer.flush();
                 return;
             }
+            // Read in weather data
+            JSONObject weatherData = readFile("weather.json");
+
+            String stationID = null;
+            // Check for specific station ID
+            if (request.contains("Station-ID: ")) {
+                stationID = request.substring(request.indexOf("Station-ID: ") + "Station-ID: ".length(), request.indexOf("\n", request.indexOf("Station-ID: ")));
+            }
+
+            if (stationID != null && weatherData.has(stationID)) {
+                // Print get request
+                System.out.println("Received valid GET request:\n" + request);
+                writer.write("HTTP/1.1 200 OK\r\n");
+                writer.write("Content-Type: application/json\r\n");
+                writer.write("\r\n");
+                
+                JSONObject stationData = new JSONObject();
+                stationData.put(stationID, weatherData.getJSONObject(stationID));
+                // Send stationData
+                writer.write(stationData.toString());
+                writer.write("\r\n");
+                writer.flush();
+                return; 
+            }
+
             
-            // Print get request
+            // Send all data
             System.out.println("Received valid GET request:\n" + request);
             writer.write("HTTP/1.1 200 OK\r\n");
             writer.write("Content-Type: application/json\r\n");
             writer.write("\r\n");
 
             // Read weather.json file
-            JSONObject weatherData = readFile("weather.json");
             writer.write(weatherData.toString());
             writer.write("\r\n");
             writer.flush();
@@ -240,8 +264,30 @@ public class AggregationServer {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
-
-        // Return null if there is an error
         return null;
+    }
+
+    private static void sendResponseCode(int code, PrintWriter writer) {
+        // Send the response code to the client
+        writer.write("HTTP/1.1 " + code + " " + getResponseCodeMessage(code) + "\r\n");
+        writer.write("\r\n");
+        writer.flush();
+    }
+
+    private static String getResponseCodeMessage(int code) {
+        switch (code) {
+            case 200:
+                return "OK";
+            case 201:
+                return "Created";
+            case 400:
+                return "Bad Request";
+            case 404:
+                return "Not Found";
+            case 500: 
+                return "Internal Server Error";
+            default:
+                return "Unknown";
+        }
     }
 }
