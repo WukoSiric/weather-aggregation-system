@@ -97,4 +97,5 @@ This will run the following scripts:
 * ```IT-1.sh``` Put Content on Server and Retrieve with GET
 * ```IT-2.sh``` Put Multiple Content on Server and Retrieve All with GET
 * ```IT-3.sh``` Put Content on Server and Retrieve with GET with Station-ID
+* ```IT-4.sh``` Tests data expunging works correctly for a single station
 

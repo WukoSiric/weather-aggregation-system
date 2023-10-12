@@ -59,3 +59,10 @@ ContentServerTest.class: ContentServerTest.java
 AggregationServerTest.class: AggregationServerTest.java
 	$(JCC) $(JFLAGS) $(CP) AggregationServerTest.java
 
+integration: 
+	./IT-1.sh
+	./IT-2.sh
+	./IT-3.sh
+	./IT-4.sh
+	./IT-Clean.sh
+	./IT-Compare.sh
