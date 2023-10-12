@@ -78,10 +78,14 @@ Station-ID: IDS60901
 If you have specified a weather station but it is not found in the weather.json file, the server will simply return the entire weather.json file, even if it only contains ```{}```. 
 
 * Sending a GET request before weather.json is created simply returns a 404 error.
+* Testing with a web browser means that you can only get the entire JSON. However, using a tool like Postman, Insomnia, or even Telnet allows you to specify the Station-ID header and get the data for a specific weather station.
 
 # Testing
-Most of my automated testing is done through unit tests. These can all be performed by running the following command:
+## Unit Testing
+Unit tests can easily be ran with the Makefile. To run all unit tests, run the following command:
 ```
 make test
 ```
 The output of these tests are all in the Tests folder.
+
+## Integration Testing
