@@ -1,0 +1,61 @@
+javac -g -cp .:./Libraries/* AggregationServer.java
+java -cp .:./Libraries/* AggregationServer
+AggregationServer listening on port 4567
+Received valid PUT request:
+PUT /weather.json HTTP/1.1
+User-Agent: ATOMClient/1/0
+Content-Type: application/json
+Content-Length: 450
+
+Request Body:
+{
+    "apparent_t": 27.3,
+    "wind_spd_kmh": 14,
+    "rel_hum": 69,
+    "lon": 153.0286,
+    "dewpt": 18.9,
+    "wind_spd_kt": 7,
+    "wind_dir": "NNE",
+    "time_zone": "AEST",
+    "air_temp": 25.5,
+    "cloud": "Mostly sunny",
+    "local_date_time_full": "20230715161000",
+    "local_date_time": "15/04:10pm",
+    "name": "Brisbane (South Bank)",
+    "id": "BNE405",
+    "state": "QLD",
+    "press": 1014.2,
+    "lat": -27.4796
+}
+File created: weather.json
+Received valid PUT request:
+PUT /weather.json HTTP/1.1
+User-Agent: ATOMClient/1/0
+Content-Type: application/json
+Content-Length: 456
+
+Request Body:
+{
+    "apparent_t": 24.5,
+    "wind_spd_kmh": 12,
+    "rel_hum": 58,
+    "lon": 151.2093,
+    "dewpt": 15.2,
+    "wind_spd_kt": 6,
+    "wind_dir": "ESE",
+    "time_zone": "AEDT",
+    "air_temp": 22.8,
+    "cloud": "Clear",
+    "local_date_time_full": "20230715163000",
+    "local_date_time": "15/04:30pm",
+    "name": "Sydney (Central Business District)",
+    "id": "SYD001",
+    "state": "NSW",
+    "press": 1011.4,
+    "lat": -33.8668
+}
+File already exists.
+Received valid GET request:
+GET /weather.json HTTP/1.1
+User-Agent: GETClient/1.0
+

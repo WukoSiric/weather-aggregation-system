@@ -1,0 +1,5 @@
+javac -g -cp .:./Libraries/* GETClient.java
+java -cp .:./Libraries/* GETClient localhost:4567 IDS60901
+HTTP/1.1 200 OK
+Content-Type: application/json
+

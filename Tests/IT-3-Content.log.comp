@@ -1,0 +1,10 @@
+javac -g -cp .:./Libraries/* ContentServer.java
+java -cp .:./Libraries/* ContentServer localhost:4567 ./Stations/weather1.txt
+HTTP/1.1 201 Created
+
+java -cp .:./Libraries/* ContentServer localhost:4567 ./Stations/weather2.txt
+HTTP/1.1 200 OK
+
+java -cp .:./Libraries/* ContentServer localhost:4567 ./Stations/weather3.txt
+HTTP/1.1 200 OK
+
