@@ -5,6 +5,9 @@ public class GETClientTest {
         testConstructGETRequestWithEmptyStationID();
         testConstructGETRequestWithSpecialCharacters();
         testConstructGETRequestWithLongStationID();
+        testConstructGETRequestWithShortStationID();
+        testConstructGETRequestWithNullStationID();
+        testConstructGETRequestWithVeryLongEmptyStationID();
     }
 
     // Test the constructGETRequest method with a station ID
@@ -47,14 +50,12 @@ public class GETClientTest {
             stationIDBuilder.append(stationID);
         }
         String longStationID = stationIDBuilder.toString();
-
+        
         // Calculate the expected request length
         int expectedLength = "GET /weather.json HTTP/1.1\r\nUser-Agent: GETClient/1.0\r\n".length();
-
         if (!longStationID.isEmpty()) {
             expectedLength += "Station-ID: ".length() + longStationID.length() + "\r\n".length();
         }
-
         expectedLength += "\r\n".length();
 
         // Check that the request is correctly constructed and has the expected length
@@ -62,7 +63,41 @@ public class GETClientTest {
         assertEqual(expectedLength, actualRequest.length(), "testConstructGETRequestWithLongStationID");
     }
 
-    // Utility method to assert equality and print the result
+    // Edge Case: Very Short Station ID
+    public static void testConstructGETRequestWithShortStationID() {
+        String stationID = "1";
+        String expectedRequest = "GET /weather.json HTTP/1.1\r\nUser-Agent: GETClient/1.0\r\nStation-ID: 1\r\n\r\n";
+        String actualRequest = GETClient.constructGETRequest(stationID);
+        assertEqual(expectedRequest, actualRequest, "testConstructGETRequestWithShortStationID");
+    }
+
+    // Edge Case: Null Station ID
+    public static void testConstructGETRequestWithNullStationID() {
+        String stationID = null;
+        String expectedRequest = "GET /weather.json HTTP/1.1\r\nUser-Agent: GETClient/1.0\r\n\r\n";
+        String actualRequest = GETClient.constructGETRequest(stationID);
+        assertEqual(expectedRequest, actualRequest, "testConstructGETRequestWithNullStationID");
+    }
+
+    // Edge Case: Very Long Station ID (Empty)
+    public static void testConstructGETRequestWithVeryLongEmptyStationID() {
+        String stationID = "";
+        int repeatCount = 1000;
+        StringBuilder stationIDBuilder = new StringBuilder();
+        for (int i = 0; i < repeatCount; i++) {
+            stationIDBuilder.append("");
+        }
+        String longStationID = stationIDBuilder.toString();
+
+        // Calculate the expected request length
+        int expectedLength = "GET /weather.json HTTP/1.1\r\nUser-Agent: GETClient/1.0\r\n\r\n".length();
+
+        // Check that the request is correctly constructed and has the expected length
+        String actualRequest = GETClient.constructGETRequest(longStationID);
+        assertEqual(expectedLength, actualRequest.length(), "testConstructGETRequestWithVeryLongEmptyStationID");
+    }
+
+    // Utility method to assert equality and print the result (same as before)
     private static void assertEqual(String expected, String actual, String testName) {
         if (expected.equals(actual)) {
             System.out.println(testName + ": Passed");
@@ -73,7 +108,7 @@ public class GETClientTest {
         }
     }
 
-    // Utility method to assert equality of lengths and print the result
+    // Utility method to assert equality of lengths and print the result (same as before)
     private static void assertEqual(int expected, int actual, String testName) {
         if (expected == actual) {
             System.out.println(testName + ": Passed");
