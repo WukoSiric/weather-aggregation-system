@@ -68,7 +68,7 @@ public class AggregationServer {
     // OUTPUTS: None
     // DESCRIPTION: Removes a station from weather.json
     static void removeStationFromWeatherJson(String stationID) {
-        JSONObject weatherData = readFile("weather.json");
+        JSONObject weatherData = ParseUtils.JSONObjectFromFile("weather.json");
         if (weatherData != null && weatherData.has(stationID)) {
             weatherData.remove(stationID);
             try (FileWriter fileWriter = new FileWriter("weather.json")) {
@@ -166,7 +166,7 @@ public class AggregationServer {
                 writer.write("HTTP/1.1 201 Created\r\n");
             } else {
                 System.out.println("File already exists.");
-                JSONObject weatherData = readFile("weather.json");
+                JSONObject weatherData = ParseUtils.JSONObjectFromFile("weather.json");
                 weatherData.put(stationID.toString(), json);
                 FileWriter fileWriter = new FileWriter("weather.json");
                 fileWriter.write(weatherData.toString());
@@ -189,7 +189,7 @@ public class AggregationServer {
                 return;
             }
             // Read in weather data
-            JSONObject weatherData = readFile("weather.json");
+            JSONObject weatherData = ParseUtils.JSONObjectFromFile("weather.json");
             String stationID = null;
 
             // Check for specific station ID
@@ -245,27 +245,6 @@ public class AggregationServer {
                 firstLineParts[0].equals("GET") &&
                 (firstLineParts[1].equals("/weather.json") || firstLineParts[1].equals("/")) &&
                 firstLineParts[2].equals("HTTP/1.1");
-    }
-
-    // INPUTS: file_path
-    // OUTPUTS: JSONObject
-    // DESCRIPTION: Reads a JSON file and returns a JSONObject
-    static JSONObject readFile(String file_path) {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(file_path));
-            String line = reader.readLine();
-            String json_string = "";
-            while (line != null) {
-                json_string += line;
-                line = reader.readLine();
-            }
-            reader.close();
-            return new JSONObject(json_string);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-        return null;
     }
 
     // INPUTS: code, writer
