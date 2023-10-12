@@ -1,13 +1,20 @@
+import java.io.*;
 public class GETClientTest {
     public static void main(String[] args) {
-        testConstructGETRequestWithStationID();
-        testConstructGETRequestWithoutStationID();
-        testConstructGETRequestWithEmptyStationID();
-        testConstructGETRequestWithSpecialCharacters();
-        testConstructGETRequestWithLongStationID();
-        testConstructGETRequestWithShortStationID();
-        testConstructGETRequestWithNullStationID();
-        testConstructGETRequestWithVeryLongEmptyStationID();
+        String testOutputFilePath = "./Tests/test-GETClient.txt";
+        try (PrintStream fileStream = new PrintStream(new FileOutputStream(testOutputFilePath))) {
+            System.setOut(fileStream);
+            testConstructGETRequestWithStationID();
+            testConstructGETRequestWithoutStationID();
+            testConstructGETRequestWithEmptyStationID();
+            testConstructGETRequestWithSpecialCharacters();
+            testConstructGETRequestWithLongStationID();
+            testConstructGETRequestWithShortStationID();
+            testConstructGETRequestWithNullStationID();
+            testConstructGETRequestWithVeryLongEmptyStationID();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     // Test the constructGETRequest method with a station ID
@@ -81,7 +88,6 @@ public class GETClientTest {
 
     // Edge Case: Very Long Station ID (Empty)
     public static void testConstructGETRequestWithVeryLongEmptyStationID() {
-        String stationID = "";
         int repeatCount = 1000;
         StringBuilder stationIDBuilder = new StringBuilder();
         for (int i = 0; i < repeatCount; i++) {
