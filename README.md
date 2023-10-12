@@ -57,7 +57,7 @@ To clean the project, run the following command:
 ```
 make clean
 ```
-* This will remove all .class files along with the weather.json file 
+* This will remove all .class files, weather.json, and all .txt files in Tests folder 
 
 # Architecture Design Decisions
 ## HTTP Headers 

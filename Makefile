@@ -42,6 +42,7 @@ run-client3: GETClient.class
 clean: 
 	$(RM) *.class
 	$(RM) weather.json
+	$(RM) ./Tests/*.txt
 
 # Testing
 test: GETClient.class GETClientTest.class ContentServer.class ContentServerTest.class AggregationServer.class AggregationServerTest.class
