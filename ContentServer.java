@@ -13,31 +13,28 @@ public class ContentServer {
         }
     
         try {
-            // Parse the servername, port, and file path from the command line
-            String[] hostname_port = URIParser.parse(args[0]);
+            // Parse the hostname and port number
+            String[] hostname_port = ParseUtils.parseURI(args[0]);
             String hostname = hostname_port[0];
             int port = Integer.parseInt(hostname_port[1]);
             String file_path = args[1];
     
             // Read the file
             ContentServer server = new ContentServer();
-            JSONObject json = server.readFile(file_path);
+            JSONObject json = ParseUtils.JSONObjectFromFile(file_path);
             if (json == null) {
                 System.out.println("Error: File not found");
                 System.exit(1);
             }
     
-            // Construct put request
             String request = server.constructPUTRequest(json);
     
-            int maxRetryAttempts = 3; // Set your desired maximum retry attempts
+            // Attempt to connect to the server
+            int maxRetryAttempts = 3;
             int retryCount = 0;
-    
             boolean success = false;
-    
             while (retryCount < maxRetryAttempts) {
                 try {
-                    // Establish connection with the server
                     Socket socket = new Socket(hostname, port);
                     PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -54,22 +51,18 @@ public class ContentServer {
                         responseBuilder.append(line);
                         line = reader.readLine();
                     }
-    
-                    // Close the connection
                     socket.close();
-    
-                    // Check if the operation was successful
+
                     if (checkIfSuccessful(responseBuilder.toString())) {
                         success = true;
                         break;
                     }
                 } catch (IOException e) {
-                    // Handle connection errors, e.g., connection refused
                     System.out.println("Error connecting to the server: " + e.getMessage());
                 }
     
                 retryCount++;
-                Thread.sleep(1000); // Wait for a moment before retrying
+                Thread.sleep(1000);
             }
     
             if (!success) {
@@ -80,50 +73,37 @@ public class ContentServer {
         }
     }
     
+    // INPUT: HTTP response
+    // OUTPUT: true if the response is successful, false otherwise
+    // DESCRIPTION: Checks if the response is successful
     static boolean checkIfSuccessful(String response) {
         if (response.startsWith("HTTP/1.1 2")) {
             return true;
         }
         return false; 
     }
-    
-    public JSONObject readFile(String file_path) {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(file_path));
-            String line = reader.readLine();
-            String json_string = "";
-            while (line != null) {
-                json_string += line;
-                line = reader.readLine();
-            }
-            reader.close();
-            return new JSONObject(json_string);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
 
-        return null;
-    }
-
+    // INPUT: JSON object
+    // OUTPUT: properly formatted PUT request
+    // DESCRIPTION: Constructs a PUT request with the JSON object as the body
     String constructPUTRequest(JSONObject json) {
-        // Construct the PUT request with JSON data
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append("PUT /weather.json HTTP/1.1\r\n");
         requestBuilder.append("User-Agent: ATOMClient/1/0\r\n");
         requestBuilder.append("Content-Type: application/json\r\n");
     
-        // Convert the JSON object to a properly formatted string
         String jsonStr = formatJsonObject(json);
     
         requestBuilder.append("Content-Length: " + jsonStr.length() + "\r\n");
-        requestBuilder.append("\r\n"); // Blank line separating headers from the body
+        requestBuilder.append("\r\n");
         requestBuilder.append(jsonStr);
         return requestBuilder.toString();
     }
     
-    private String formatJsonObject(JSONObject json) {
-        // Format the JSON object as a string
+    // INPUT: JSON object
+    // OUTPUT: properly formatted JSON string
+    // DESCRIPTION: Formats a JSON object as a string for sending over the network
+    String formatJsonObject(JSONObject json) {
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{\r\n");
         Iterator<String> keys = json.keys();
