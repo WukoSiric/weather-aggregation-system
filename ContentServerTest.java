@@ -4,7 +4,7 @@ import java.io.*;
 public class ContentServerTest {
     public static void main(String[] args) {
         // Define the file path for the test output
-        String testOutputFilePath = "./Tests/test-ContentServer.txt";
+        String testOutputFilePath = "./Tests/UNIT-Content.txt";
 
         try (PrintStream fileStream = new PrintStream(new FileOutputStream(testOutputFilePath))) {
             // Redirect the standard output to the test output file

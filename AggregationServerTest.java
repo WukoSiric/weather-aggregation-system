@@ -105,7 +105,7 @@ public class AggregationServerTest {
     }
 
     public static void main(String[] args) {
-        String testOutputFilePath = "./Tests/test-AggregationServer.txt";
+        String testOutputFilePath = "./Tests/UNIT-Aggregation.txt";
         AggregationServerTest test = new AggregationServerTest();
         try (PrintStream fileStream = new PrintStream(new FileOutputStream(testOutputFilePath))) {
             System.setOut(fileStream);

@@ -1,7 +1,7 @@
 import java.io.*;
 public class GETClientTest {
     public static void main(String[] args) {
-        String testOutputFilePath = "./Tests/test-GETClient.txt";
+        String testOutputFilePath = "./Tests/UNIT-Client.txt";
         try (PrintStream fileStream = new PrintStream(new FileOutputStream(testOutputFilePath))) {
             System.setOut(fileStream);
             testConstructGETRequestWithStationID();
