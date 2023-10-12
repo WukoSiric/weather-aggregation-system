@@ -89,3 +89,12 @@ make test
 The output of these tests are all in the Tests folder.
 
 ## Integration Testing
+Integration testing is done with the script files provided in the root folder. The entire suite of integration tests can be ran with the following command:
+```
+make integration
+```
+This will run the following scripts:
+* ```IT-1.sh``` Put Content on Server and Retrieve with GET
+* ```IT-2.sh``` Put Multiple Content on Server and Retrieve All with GET
+* ```IT-3.sh``` Put Content on Server and Retrieve with GET with Station-ID
+
