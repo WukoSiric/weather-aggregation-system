@@ -80,13 +80,13 @@ public class GETClient {
         }
     }
 
-    private static String constructGETRequest(String stationID) {
+    static String constructGETRequest(String stationID) {
         // Construct the GET request with optional stationID
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append("GET /weather.json HTTP/1.1\r\n");
         requestBuilder.append("User-Agent: GETClient/1.0\r\n");
 
-        if (stationID != null) {
+        if (stationID != null && !stationID.isEmpty()) {
             // Include the stationID in the request
             requestBuilder.append("Station-ID: " + stationID + "\r\n");
         }

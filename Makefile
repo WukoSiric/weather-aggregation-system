@@ -42,3 +42,11 @@ run-client3: GETClient.class
 clean: 
 	$(RM) *.class
 	$(RM) weather.json
+
+# Testing
+test: GETClient.class GETClientTest.class
+	$(JC) $(CP) GETClientTest
+
+GETClientTest.class: GETClientTest.java
+	$(JCC) $(JFLAGS) $(CP) GETClientTest.java
+

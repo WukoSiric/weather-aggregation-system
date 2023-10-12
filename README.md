@@ -79,4 +79,9 @@ If you have specified a weather station but it is not found in the weather.json 
 
 * Sending a GET request before weather.json is created simply returns a 404 error.
 
-# Testing Strategy
+# Testing
+Most of my automated testing is done through unit tests. These can all be performed by running the following command:
+```
+make test
+```
+The output of these tests are all located in TestResults.txt.
