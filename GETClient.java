@@ -10,7 +10,7 @@ public class GETClient {
             System.exit(1);
         }
 
-        String[] hostname_port = URIParser.parse(args[0]);
+        String[] hostname_port = ParseUtils.parseURI(args[0]);
         String hostname = hostname_port[0];
         int port = Integer.parseInt(hostname_port[1]);
         String stationID = null;
