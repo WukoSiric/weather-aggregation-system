@@ -24,7 +24,7 @@ public class GETClient {
             int retryCount = 0;
 
             boolean success = false;
-a
+
             while (retryCount < maxRetryAttempts) {
                 try {
                     // Establish connection with the server
