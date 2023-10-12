@@ -1,10 +1,10 @@
 import java.io.*;
 import java.net.*;
-import org.json.*; 
+import org.json.*;
 
 public class GETClient {
     public static void main(String[] args) {
-        // Check arguments 
+        // Check arguments
         if (args.length < 1) {
             System.err.println("Usage: java GETClient servername:portnumber stationID(optional)");
             System.exit(1);
@@ -20,40 +20,62 @@ public class GETClient {
         }
 
         try {
-            // Establish connection with the server
-            Socket socket = new Socket(hostname, port);
-            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            int maxRetryAttempts = 3; // Set your desired maximum retry attempts
+            int retryCount = 0;
 
-            // Construct the GET request
-            String request = constructGETRequest(stationID);
+            boolean success = false;
 
-            // Send the GET request to the server using write
-            writer.write(request);
-            writer.flush(); 
+            while (retryCount < maxRetryAttempts) {
+                try {
+                    // Establish connection with the server
+                    Socket socket = new Socket(hostname, port);
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // Read and print the response from the server
-            StringBuilder response = new StringBuilder();
-            String line; 
-            while ((line = reader.readLine()) != null) {
-                response.append(line).append("\n");
-            }
+                    // Construct the GET request
+                    String request = constructGETRequest(stationID);
 
-            // Close the connection
-            socket.close();
+                    // Send the GET request to the server using write
+                    writer.write(request);
+                    writer.flush();
 
-            // Split response body by empty line 
-            String[] responseParts = response.toString().split("\n\n");
-            JSONObject receivedData = new JSONObject(responseParts[1]); 
+                    // Read and print the response from the server
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line).append("\n");
+                    }
 
-            // Print the response body without JSON formatting
-            for (String key : receivedData.keySet()) {
-                System.out.println("Station " + key);
-                for (String key2 : receivedData.getJSONObject(key).keySet()) {
-                    System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
+                    // Close the connection
+                    socket.close();
+
+                    // Split response body by empty line
+                    String[] responseParts = response.toString().split("\n\n");
+                    JSONObject receivedData = new JSONObject(responseParts[1]);
+
+                    // Print the response body without JSON formatting
+                    for (String key : receivedData.keySet()) {
+                        System.out.println("Station " + key);
+                        for (String key2 : receivedData.getJSONObject(key).keySet()) {
+                            System.out.println("    " + key2 + ": " + receivedData.getJSONObject(key).get(key2));
+                        }
+                    }
+
+                    success = true;
+                    break; // Exit the loop if successful
+                } catch (IOException e) {
+                    // Handle connection errors, e.g., connection refused
+                    System.err.println("Error connecting to the server: " + e.getMessage());
                 }
+
+                retryCount++;
+                Thread.sleep(2000); // Wait for a moment before retrying
             }
-        } catch (IOException e) {
+
+            if (!success) {
+                System.err.println("Failed to connect after " + maxRetryAttempts + " attempts.");
+            }
+        } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
     }
