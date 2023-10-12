@@ -24,7 +24,7 @@ sleep 2
 
 # Perform general GET requests using the GETClient and capture its output
 echo "Performing GET requests with no specified stationID:"
-make run-client >> "$CLIENT_LOG" 2>&1
+make run-client > "$CLIENT_LOG" 2>&1
 
 # Kill the AggregationServer after tests are done
 kill $(pgrep -f "AggregationServer")
