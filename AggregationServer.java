@@ -99,12 +99,11 @@ public class AggregationServer {
                     handlePutRequest(requestString, reader, writer);
                 } else if (isValidGetRequest(requestString)) {
                     handleGetRequest(requestString, reader, writer);
+                } else if (requestString.isEmpty()) {
+                    sendResponseCode(204, writer);
                 }
                 else {
-                    // Respond with a 400 Bad Request
-                    writer.write("HTTP/1.1 400 Bad Request\r\n");
-                    writer.write("\r\n");
-                    writer.flush();
+                    sendResponseCode(400, writer);
                 }
             } catch (IOException e) {
                 System.err.println("Error handling client request: " + e.getMessage());
@@ -280,6 +279,8 @@ public class AggregationServer {
                 return "OK";
             case 201:
                 return "Created";
+            case 204: 
+                return "No Content";
             case 400:
                 return "Bad Request";
             case 404:
