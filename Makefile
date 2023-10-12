@@ -44,13 +44,17 @@ clean:
 	$(RM) weather.json
 
 # Testing
-test: GETClient.class GETClientTest.class ContentServer.class ContentServerTest.class
+test: GETClient.class GETClientTest.class ContentServer.class ContentServerTest.class AggregationServer.class AggregationServerTest.class
 	$(JC) $(CP) GETClientTest
 	$(JC) $(CP) ContentServerTest
+	$(JC) $(CP) AggregationServerTest
 
 GETClientTest.class: GETClientTest.java
 	$(JCC) $(JFLAGS) $(CP) GETClientTest.java
 
 ContentServerTest.class: ContentServerTest.java
 	$(JCC) $(JFLAGS) $(CP) ContentServerTest.java
+
+AggregationServerTest.class: AggregationServerTest.java
+	$(JCC) $(JFLAGS) $(CP) AggregationServerTest.java
 

@@ -41,7 +41,7 @@ public class AggregationServer {
         }
     }
 
-    private static void startStationExpirationTimer() {
+    static void startStationExpirationTimer() {
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -60,7 +60,7 @@ public class AggregationServer {
         }, 0, 3000);
     }
 
-    private static void removeStationFromWeatherJson(String stationID) {
+    static void removeStationFromWeatherJson(String stationID) {
         JSONObject weatherData = readFile("weather.json");
         if (weatherData != null && weatherData.has(stationID)) {
             weatherData.remove(stationID);
@@ -73,7 +73,7 @@ public class AggregationServer {
         }
     }
 
-    private static class ClientHandler extends Thread {
+    static class ClientHandler extends Thread {
         private final Socket clientSocket;
 
         public ClientHandler(Socket clientSocket) {
@@ -116,15 +116,7 @@ public class AggregationServer {
             }
         }
 
-        private static boolean isValidPutRequest(String request) {
-            // Check if the request is a valid PUT request with required headers
-            return 
-                    request.startsWith("PUT") &&
-                    request.contains("Content-Type: application/json") &&
-                    request.contains("Content-Length: ");
-        }
-
-        private void handlePutRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
+        void handlePutRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
             // Extract content length
             int contentLength = extractContentLength(request.toString());
 
@@ -173,19 +165,7 @@ public class AggregationServer {
             writer.flush();
         }
 
-        private static boolean isValidGetRequest(String request) {
-            // Check if the request is a valid GET request with required headers
-            String[] requestLines = request.split("\n");
-            String firstLine = requestLines[0];
-            String[] firstLineParts = firstLine.split(" ");
-            return 
-                    firstLineParts.length == 3 &&
-                    firstLineParts[0].equals("GET") &&
-                    (firstLineParts[1].equals("/weather.json") || firstLineParts[1].equals("/")) &&
-                    firstLineParts[2].equals("HTTP/1.1");
-        }
-
-        private void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
+        void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
             File file = new File("weather.json");
             if (!file.exists()) {
                 writer.write("HTTP/1.1 404 Not Found\r\n");
@@ -231,20 +211,27 @@ public class AggregationServer {
             writer.flush();
         }
 
-        private static int extractContentLength(String request) {
-            // Extract and parse the "Content-Length" header value
-            int startIndex = request.indexOf("Content-Length: ");
-            if (startIndex != -1) {
-                int endIndex = request.indexOf("\n", startIndex);
-                String lengthStr = request.substring(startIndex + "Content-Length: ".length(), endIndex).trim();
-                try {
-                    return Integer.parseInt(lengthStr);
-                } catch (NumberFormatException e) {
-                    // Handle parsing error if necessary
-                }
-            }
-            return -1; // Return -1 if header is not found or parsing fails
-        }
+
+    }
+
+    static boolean isValidPutRequest(String request) {
+        // Check if the request is a valid PUT request with required headers
+        return 
+            request.startsWith("PUT") &&
+            request.contains("Content-Type: application/json") &&
+            request.contains("Content-Length: ");
+    }
+
+    static boolean isValidGetRequest(String request) {
+        // Check if the request is a valid GET request with required headers
+        String[] requestLines = request.split("\n");
+        String firstLine = requestLines[0];
+        String[] firstLineParts = firstLine.split(" ");
+        return 
+                firstLineParts.length == 3 &&
+                firstLineParts[0].equals("GET") &&
+                (firstLineParts[1].equals("/weather.json") || firstLineParts[1].equals("/")) &&
+                firstLineParts[2].equals("HTTP/1.1");
     }
 
     public static JSONObject readFile(String file_path) {
@@ -266,14 +253,14 @@ public class AggregationServer {
         return null;
     }
 
-    private static void sendResponseCode(int code, PrintWriter writer) {
+    static void sendResponseCode(int code, PrintWriter writer) {
         // Send the response code to the client
         writer.write("HTTP/1.1 " + code + " " + getResponseCodeMessage(code) + "\r\n");
         writer.write("\r\n");
         writer.flush();
     }
 
-    private static String getResponseCodeMessage(int code) {
+    static String getResponseCodeMessage(int code) {
         switch (code) {
             case 200:
                 return "OK";
@@ -290,5 +277,20 @@ public class AggregationServer {
             default:
                 return "Unknown";
         }
+    }
+
+    static int extractContentLength(String request) {
+        // Extract and parse the "Content-Length" header value
+        int startIndex = request.indexOf("Content-Length: ");
+        if (startIndex != -1) {
+            int endIndex = request.indexOf("\n", startIndex);
+            String lengthStr = request.substring(startIndex + "Content-Length: ".length(), endIndex).trim();
+            try {
+                return Integer.parseInt(lengthStr);
+            } catch (NumberFormatException e) {
+                // Handle parsing error if necessary
+            }
+        }
+        return -1; // Return -1 if header is not found or parsing fails
     }
 }
