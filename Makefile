@@ -45,7 +45,7 @@ clean:
 	$(RM) ./Tests/*.txt
 
 # Testing
-test: GETClient.class GETClientTest.class ContentServer.class ContentServerTest.class AggregationServer.class AggregationServerTest.class
+unit: GETClient.class GETClientTest.class ContentServer.class ContentServerTest.class AggregationServer.class AggregationServerTest.class
 	$(JC) $(CP) GETClientTest
 	$(JC) $(CP) ContentServerTest
 	$(JC) $(CP) AggregationServerTest
