@@ -53,6 +53,9 @@ public class GETClient {
                     String[] responseParts = response.toString().split("\n\n");
                     JSONObject receivedData = new JSONObject(responseParts[1]);
 
+                    // Print reponse line 
+                    System.out.println(responseParts[0] + "\n");
+
                     // Print the response body without JSON formatting
                     for (String key : receivedData.keySet()) {
                         System.out.println("Station " + key);
@@ -76,7 +79,6 @@ public class GETClient {
                 System.err.println("Failed to connect after " + maxRetryAttempts + " attempts.");
             }
         } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
