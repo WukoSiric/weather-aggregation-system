@@ -141,7 +141,7 @@ public class AggregationServer {
                 contentLength -= bytesRead;
             }
 
-            // Now you can process the request body in 'requestBody' variable
+            // Process the request body
             System.out.println("Received valid PUT request:\n" + request);
             System.out.println("Request Body:\n" + requestBody.toString());
 
