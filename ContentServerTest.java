@@ -1,12 +1,24 @@
 import org.json.*; 
+import java.io.*;
 
 public class ContentServerTest {
     public static void main(String[] args) {
-        testConstructPUTRequest();
-        testCheckIfSuccessfulWithSuccessfulResponse();
-        testCheckIfSuccessfulWithUnsuccessfulResponse();
-        testReadFileWithValidFile();
-        testReadFileWithInvalidFile();
+        // Define the file path for the test output
+        String testOutputFilePath = "./Tests/test-ContentServer.txt";
+
+        try (PrintStream fileStream = new PrintStream(new FileOutputStream(testOutputFilePath))) {
+            // Redirect the standard output to the test output file
+            System.setOut(fileStream);
+
+            // Run the tests
+            testConstructPUTRequest();
+            testCheckIfSuccessfulWithSuccessfulResponse();
+            testCheckIfSuccessfulWithUnsuccessfulResponse();
+            testReadFileWithValidFile();
+            testReadFileWithInvalidFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     // Test the constructPUTRequest method

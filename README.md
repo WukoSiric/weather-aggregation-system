@@ -84,4 +84,4 @@ Most of my automated testing is done through unit tests. These can all be perfor
 ```
 make test
 ```
-The output of these tests are all located in TestResults.txt.
+The output of these tests are all in the Tests folder.
