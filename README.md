@@ -46,7 +46,7 @@ make run-client
 ```
 * This won't specify which weather station to get data from, so it will return all data in the weather.json file
 
-You can also run the GETClient with parameters to specify which weather station to get data from, corresponding again with the data created after weather1.txt, weather2.txt and weather3.txt have been PUT into weather.json. To do this, run the following commands:
+You can also run the GETClient with parameters to specify which weather station to get data from. ```make run-client1``` attempts to get station data corresponding to that contained in weather1.txt and so on. To run each of these, run the following commands:
 ```
 make run-client1
 make run-client2
