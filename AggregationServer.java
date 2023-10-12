@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class AggregationServer {
     private static final int defaultPort = 4567;
     private static final Map<String, Long> stationTimestamps = new HashMap<>();
-    private static final long EXPIRATION_TIME = 300 * 1000;
+    private static final long EXPIRATION_TIME = 30 * 1000;
     public static void main(String[] args) {
         int port;
 
