@@ -10,6 +10,8 @@ public class AggregationServer {
     private static final int defaultPort = 4567;
     private static final Map<String, Long> stationTimestamps = new HashMap<>();
     private static final long EXPIRATION_TIME = 30 * 1000;
+
+    // MAIN
     public static void main(String[] args) {
         int port;
 
@@ -24,7 +26,6 @@ public class AggregationServer {
             port = defaultPort;
         }
 
-        // Start the station expiration timer
         startStationExpirationTimer();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -41,6 +42,9 @@ public class AggregationServer {
         }
     }
 
+    // INPUTS: None
+    // OUTPUTS: None
+    // DESCRIPTION: Starts a timer that checks for expired stations every 3 seconds
     static void startStationExpirationTimer() {
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -60,6 +64,9 @@ public class AggregationServer {
         }, 0, 3000);
     }
 
+    // INPUTS: stationID
+    // OUTPUTS: None
+    // DESCRIPTION: Removes a station from weather.json
     static void removeStationFromWeatherJson(String stationID) {
         JSONObject weatherData = readFile("weather.json");
         if (weatherData != null && weatherData.has(stationID)) {
@@ -73,6 +80,9 @@ public class AggregationServer {
         }
     }
 
+    // INPUTS: None
+    // OUTPUTS: None
+    // DESCRIPTION: Handles client requests, including PUT and GET requests
     static class ClientHandler extends Thread {
         private final Socket clientSocket;
 
@@ -94,7 +104,6 @@ public class AggregationServer {
                 }
 
                 String requestString = request.toString();
-
                 if (isValidPutRequest(requestString)) {
                     handlePutRequest(requestString, reader, writer);
                 } else if (isValidGetRequest(requestString)) {
@@ -116,6 +125,9 @@ public class AggregationServer {
             }
         }
 
+        // INPUTS: request, reader, writer
+        // OUTPUTS: None
+        // DESCRIPTION: Handles PUT requests by adding the station to stationTimestamps and weather.json, and sending appropriate response codes
         void handlePutRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
             // Extract content length
             int contentLength = extractContentLength(request.toString());
@@ -165,6 +177,9 @@ public class AggregationServer {
             writer.flush();
         }
 
+        // INPUTS: request, reader, writer
+        // OUTPUTS: None
+        // DESCRIPTION: Handles GET requests by reading weather.json and sending appropriate response codes
         void handleGetRequest(String request, BufferedReader reader, PrintWriter writer) throws IOException {
             File file = new File("weather.json");
             if (!file.exists()) {
@@ -175,13 +190,13 @@ public class AggregationServer {
             }
             // Read in weather data
             JSONObject weatherData = readFile("weather.json");
-
             String stationID = null;
+
             // Check for specific station ID
             if (request.contains("Station-ID: ")) {
                 stationID = request.substring(request.indexOf("Station-ID: ") + "Station-ID: ".length(), request.indexOf("\n", request.indexOf("Station-ID: ")));
             }
-
+            
             if (stationID != null && weatherData.has(stationID)) {
                 // Print get request
                 System.out.println("Received valid GET request:\n" + request);
@@ -197,33 +212,31 @@ public class AggregationServer {
                 writer.flush();
                 return; 
             }
-
-            
             // Send all data
             System.out.println("Received valid GET request:\n" + request);
             writer.write("HTTP/1.1 200 OK\r\n");
             writer.write("Content-Type: application/json\r\n");
             writer.write("\r\n");
-
-            // Read weather.json file
             writer.write(weatherData.toString());
             writer.write("\r\n");
             writer.flush();
         }
-
-
     }
 
+    // INPUTS: request
+    // OUTPUTS: boolean
+    // DESCRIPTION: Checks if the request is a valid PUT request with required headers
     static boolean isValidPutRequest(String request) {
-        // Check if the request is a valid PUT request with required headers
         return 
             request.startsWith("PUT") &&
             request.contains("Content-Type: application/json") &&
             request.contains("Content-Length: ");
     }
 
+    // INPUTS: request
+    // OUTPUTS: boolean
+    // DESCRIPTION: Checks if the request is a valid GET request with required headers
     static boolean isValidGetRequest(String request) {
-        // Check if the request is a valid GET request with required headers
         String[] requestLines = request.split("\n");
         String firstLine = requestLines[0];
         String[] firstLineParts = firstLine.split(" ");
@@ -234,8 +247,10 @@ public class AggregationServer {
                 firstLineParts[2].equals("HTTP/1.1");
     }
 
-    public static JSONObject readFile(String file_path) {
-        // Read the file and return a JSONObject
+    // INPUTS: file_path
+    // OUTPUTS: JSONObject
+    // DESCRIPTION: Reads a JSON file and returns a JSONObject
+    static JSONObject readFile(String file_path) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file_path));
@@ -253,13 +268,18 @@ public class AggregationServer {
         return null;
     }
 
+    // INPUTS: code, writer
+    // OUTPUTS: None
+    // DESCRIPTION: Sends a response code to the client
     static void sendResponseCode(int code, PrintWriter writer) {
-        // Send the response code to the client
         writer.write("HTTP/1.1 " + code + " " + getResponseCodeMessage(code) + "\r\n");
         writer.write("\r\n");
         writer.flush();
     }
 
+    // INPUTS: code
+    // OUTPUTS: String
+    // DESCRIPTION: Returns the response code message for a given response code
     static String getResponseCodeMessage(int code) {
         switch (code) {
             case 200:
@@ -279,8 +299,10 @@ public class AggregationServer {
         }
     }
 
+    // INPUTS: request
+    // OUTPUTS: int
+    // DESCRIPTION: Extracts the content length from a request
     static int extractContentLength(String request) {
-        // Extract and parse the "Content-Length" header value
         int startIndex = request.indexOf("Content-Length: ");
         if (startIndex != -1) {
             int endIndex = request.indexOf("\n", startIndex);
@@ -288,9 +310,8 @@ public class AggregationServer {
             try {
                 return Integer.parseInt(lengthStr);
             } catch (NumberFormatException e) {
-                // Handle parsing error if necessary
             }
         }
-        return -1; // Return -1 if header is not found or parsing fails
+        return -1;
     }
 }
