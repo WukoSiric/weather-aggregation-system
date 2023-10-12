@@ -89,6 +89,8 @@ make test
 The output of these tests are all in the Tests folder.
 
 ## Integration Testing
+**IMPORTANT: DO NOT SEND ANY REQUESTS TO THE SERVER WHILE INTEGRATION TESTING. THIS WILL CAUSE THE TESTS TO FAIL.**
+
 Integration testing is done with the script files provided in the root folder. The entire suite of integration tests can be ran with the following command:
 ```
 make integration
@@ -98,4 +100,5 @@ This will run the following scripts:
 * ```IT-2.sh``` Put Multiple Content on Server and Retrieve All with GET
 * ```IT-3.sh``` Put Content on Server and Retrieve with GET with Station-ID
 * ```IT-4.sh``` Tests data expunging works correctly for a single station
-
+* ```IT-Clean.sh``` Removes makefile inserted statements from log files 
+* ```IT-Compare.sh``` Evaluates integration tests by comparing log files with checksums of .comp files
