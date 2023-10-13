@@ -12,6 +12,12 @@ java -cp ".:./Libraries/*" AggregationServer <port>
 ```
 If ```<port>``` is not specified, the server will run on port 4567.
 
+>If you encounter an error saying that the port is already in use, you can run the following command to find the process ID of the process using that port:
+>```
+>pgrep -f "AggregationServer" #Prints running AggregationServer pid
+>kill <returned process id>
+>```
+
 **Content Server:** 
 ``` 
 java -cp ".:./Libraries/*" ContentServer localhost:port <file_path>
