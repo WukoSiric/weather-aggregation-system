@@ -84,7 +84,7 @@ If you have specified a weather station but it is not found in the weather.json 
 ## Unit Testing
 Unit tests can easily be ran with the Makefile. To run all unit tests, run the following command:
 ```
-make test
+make unit
 ```
 The output of these tests are all in the Tests folder.
 
