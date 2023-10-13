@@ -121,3 +121,5 @@ This will run the following scripts:
 * ```IT-Clean.sh``` Removes makefile inserted statements from log files 
 * ```IT-Compare.sh``` Evaluates integration tests by comparing log files with checksums of .comp files
 
+The integration tests generate logs found in the Tests folder. These logs are compared to the .comp files in the Tests folder. If the logs match the .comp files, the test passes. Otherwise, the test fails.
+
